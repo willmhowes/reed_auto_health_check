@@ -39,7 +39,7 @@ async function page1() {
 
   let text = await driver.findElement(webdriver.By.className('Selection reg'));
   await text.click();
-  console.log(`"${await text.getText()}"`);
+  console.log(`Consent: "${await text.getText()}"`);
   await nextPage();
   page2();
 }
@@ -50,23 +50,21 @@ async function page2() {
     console.log(`"${await item.getText()}"`);
   }; */
   let selection = arr[arr.length - 1];
-  console.log(`"${await selection.getText()}"`);
+  console.log(`Circumstances: "${await selection.getText()}"`);
   await selection.click();
   await nextPage();
   page3();
 }
 
 async function page3() {
-  await takeScreenshot();
-  // let arr = await driver.findElements(webdriver.By.css("li"));
+  let arr = await driver.findElements(webdriver.By.css("li"));
   /* for (let item of arr) {
     console.log(`"${await item.getText()}"`);
   }; */
-  // let selection = arr[arr.length-1];
-  // console.log(`"${await selection.getText()}"`);
-  // await selection.click();
-  // nextPage();
-  // page3();
+  let selection = arr[arr.length-1];
+  console.log(`Symptoms: "${await selection.getText()}"`);
+  await selection.click();
+  await nextPage();
   await driver.quit();
 }
 
@@ -75,21 +73,30 @@ async function main() {
   await driver.get(`${process.env.URL}`);
   await driver.sleep(1000);
 
-  // determine progress
-  let progress = 0;
-  let source = await driver.getPageSource();
-  progress = findPercentComplete(source);
-  console.log("Complete:", progress);
-
-  // activate form completion
-  if (progress == 0) {
-    page1();
-  } else if (progress == 50) {
-    page2();
-  } else if (progress == 83) {
-    page3();
-  } else {
+  // verify survey is incomplete
+  // TODO: in order to avoid throwing an error, consider investigating
+  // children of "id=Questions" which I suspect loads on every page
+  let end = await driver.findElement(webdriver.By.id("EndOfSurvey"));
+  if (end) {
+    console.log("Survey is already complete!");
     await driver.quit();
+  } else {
+    // determine progress
+    let progress = 0;
+    let source = await driver.getPageSource();
+    progress = findPercentComplete(source);
+    console.log(`Survey Completeness: ${progress}%`);
+
+    // activate form completion
+    if (progress == 0) {
+      page1();
+    } else if (progress == 50) {
+      page2();
+    } else if (progress == 83) {
+      page3();
+    } else {
+      await driver.quit();
+    }
   }
 }
 
