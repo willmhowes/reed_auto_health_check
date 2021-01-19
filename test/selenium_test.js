@@ -29,6 +29,7 @@ async function takeScreenshot() {
 
 async function nextPage() {
   await driver.findElement(webdriver.By.name("NextButton")).click();
+  await driver.sleep(1000);
 }
 
 async function page1() {
@@ -40,6 +41,19 @@ async function page1() {
   await text.click();
   console.log(`"${await text.getText()}"`);
   nextPage();
+}
+
+async function page2() {
+  let arr = await driver.findElements(webdriver.By.css("li"));
+  /* for (let item of arr) {
+    console.log(`"${await item.getText()}"`);
+  }; */
+  let selection = arr[arr.length-1];
+  console.log(`"${await selection.getText()}"`);
+  await selection.click();
+  // takeScreenshot()
+  // nextPage();
+  await driver.quit();
 }
 
 async function main() {
@@ -57,12 +71,12 @@ async function main() {
   if (progress == 0) {
     page1();
   } else if (progress == 50) {
-    // page2();
+    page2();
   } else if (progress == 100) {
     // page3();
+  } else {
+    await driver.quit();
   }
-
-  await driver.quit();
 }
 
 main();
