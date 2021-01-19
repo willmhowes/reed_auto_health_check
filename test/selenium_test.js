@@ -86,7 +86,7 @@ async function main() {
     page1();
   } else if (progress == 50) {
     page2();
-  } else if (progress == 100) {
+  } else if (progress == 83) {
     page3();
   } else {
     await driver.quit();
