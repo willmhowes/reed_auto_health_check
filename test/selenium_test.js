@@ -1,4 +1,6 @@
 require('dotenv').config()
+const { writeFile } = require('fs');
+const { promisify } = require('util');
 
 var webdriver = require('selenium-webdriver'),
   By = webdriver.By,
@@ -14,15 +16,18 @@ var driver = new webdriver.Builder()
   .setFirefoxOptions(options)
   .build();
 
-driver.get(`${process.env.URL}`).then(function () {
-  driver.sleep(1000).then(function () {
-    driver.getTitle().then(function (title) {
-      console.log(title)
-    });
-    driver.findElement(webdriver.By.className('Selection reg'))
-        .getText().then(function (text) {
-      console.log(text);
-      driver.quit();
-    });
-  });
-});
+async function page1() {
+  await driver.get(`${process.env.URL}`);
+  let title = await driver.getTitle();
+  console.log(title);
+  await driver.sleep(1000);
+
+  let text = await driver.findElement(webdriver.By.className('Selection reg'));
+  await text.click();
+  console.log(await text.getText());
+  const data = await driver.takeScreenshot();
+  await promisify(writeFile)('screenshot.png', data, 'base64');
+  await driver.quit();
+}
+
+page1();
