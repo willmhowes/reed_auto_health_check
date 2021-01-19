@@ -16,6 +16,11 @@ var driver = new webdriver.Builder()
   .setFirefoxOptions(options)
   .build();
 
+// CONSTANTS
+const PAGE1_PERCENT = 0;
+const PAGE2_PERCENT = 50;
+const PAGE3_PERCENT = 83;
+
 function findPercentComplete(source) {
   let re = /<div class="ProgressBarFill" style="width: (\d{1,3})%">/;
   let result = re.exec(source);
@@ -90,13 +95,14 @@ async function main() {
     console.log(`Survey Completeness: ${progress}%`);
 
     // activate form completion
-    if (progress == 0) {
+    if (progress == PAGE1_PERCENT) {
       page1();
-    } else if (progress == 50) {
+    } else if (progress == PAGE2_PERCENT) {
       page2();
-    } else if (progress == 83) {
+    } else if (progress == PAGE3_PERCENT) {
       page3();
     } else {
+      console.log("Percent Complete Unrecognized! Contact Developer");
       await driver.quit();
     }
   }
