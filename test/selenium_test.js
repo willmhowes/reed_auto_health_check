@@ -37,6 +37,8 @@ async function page1() {
   let title = await driver.getTitle();
   console.log(title);
 
+  // TODO: abstract "li" element search from page2 and page3 into
+  // a function and deploy said function in page1
   let text = await driver.findElement(webdriver.By.className('Selection reg'));
   await text.click();
   console.log(`Consent: "${await text.getText()}"`);
