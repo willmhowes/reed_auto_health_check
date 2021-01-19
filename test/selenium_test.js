@@ -40,7 +40,8 @@ async function page1() {
   let text = await driver.findElement(webdriver.By.className('Selection reg'));
   await text.click();
   console.log(`"${await text.getText()}"`);
-  nextPage();
+  await nextPage();
+  page2();
 }
 
 async function page2() {
@@ -48,11 +49,24 @@ async function page2() {
   /* for (let item of arr) {
     console.log(`"${await item.getText()}"`);
   }; */
-  let selection = arr[arr.length-1];
+  let selection = arr[arr.length - 1];
   console.log(`"${await selection.getText()}"`);
   await selection.click();
-  // takeScreenshot()
+  await nextPage();
+  page3();
+}
+
+async function page3() {
+  await takeScreenshot();
+  // let arr = await driver.findElements(webdriver.By.css("li"));
+  /* for (let item of arr) {
+    console.log(`"${await item.getText()}"`);
+  }; */
+  // let selection = arr[arr.length-1];
+  // console.log(`"${await selection.getText()}"`);
+  // await selection.click();
   // nextPage();
+  // page3();
   await driver.quit();
 }
 
@@ -73,7 +87,7 @@ async function main() {
   } else if (progress == 50) {
     page2();
   } else if (progress == 100) {
-    // page3();
+    page3();
   } else {
     await driver.quit();
   }
