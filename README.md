@@ -10,7 +10,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 This project is written in Javascript and requires the [Node.js](https://nodejs.org/en/) runtime.
 
-Firefox's [geckodriver](https://github.com/mozilla/geckodriver) is required to be accessible by the `PATH` variable. On Mac OS, the easiest way I found to do this is with [Homebrew](https://brew.sh/):
+Firefox's [geckodriver](https://github.com/mozilla/geckodriver) must be installed and accessible in `PATH`. On Mac OS, I find the easiest way to do this is with [Homebrew](https://brew.sh/) because it handles the installation to `PATH` by default:
 
 ```
 brew install geckodriver
