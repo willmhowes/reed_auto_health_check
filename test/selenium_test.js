@@ -77,20 +77,15 @@ async function main() {
   // load page
   await driver.get(`${process.env.URL}`);
   await driver.sleep(1000);
-
   // print page title
   console.log(await driver.getTitle());
-
-  // verify survey is incomplete
-  // TODO: in order to avoid throwing an error, consider investigating
-  // children of "id=Questions" which I suspect loads on every page
-  // let end = await driver.findElement(webdriver.By.id("EndOfSurvey"));
+  // load html source
   let html_source = await driver.getPageSource();
-  // let re = /<div class="ProgressBarFill" style="width: (\d{1,3})%">/;
-  // let result = re.exec(html_source);
-  // return result[1];
+  // test if survey is already complete
+  let re = /id="EndOfSurvey"[\w\s-="]+class="END_OF_SURVEY[\w\s-="]+"/;
+  let form_completed = re.test(html_source);
 
-  if (false) {
+  if (form_completed) {
     console.log("Survey is already complete!");
     await driver.quit();
   } else {
