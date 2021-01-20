@@ -1,6 +1,6 @@
 # Reed Daily Health Check Automator
 
-This project is a **VERY** work-in-progress attempt to automate the submission of the Reed College Daily Health Check.
+This project is a **VERY** work-in-progress attempt to automate the submission of the Reed College Daily Health Check using Selenium WebDriver to automote the process.
 
 ## Getting Started
 
@@ -45,6 +45,17 @@ URL=https://example.com
 ```
 npm run form
 ```
+
+### Completed Features
+
+- [x] User can run script that will complete the health check
+
+### Next Steps
+
+- [ ] Build a web interface
+- [ ] Integrate Selenium API into web interface
+- [ ] Place logic into an express backend (?)
+- [ ] Scrape email for new health check link
 
 ## Built With
 
