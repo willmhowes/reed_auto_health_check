@@ -21,9 +21,9 @@ const PAGE1_PERCENT = 0;
 const PAGE2_PERCENT = 50;
 const PAGE3_PERCENT = 83;
 
-function findPercentComplete(source) {
+function findPercentComplete(html) {
   let re = /<div class="ProgressBarFill" style="width: (\d{1,3})%">/;
-  let result = re.exec(source);
+  let result = re.exec(html);
   return result[1];
 }
 
@@ -37,25 +37,25 @@ async function nextPage() {
   await driver.sleep(1000);
 }
 
-async function page1() {
-  // print page title
-  let title = await driver.getTitle();
-  console.log(title);
+async function loadListItems() {
+  let arr = await driver.findElements(webdriver.By.css("li"));
+  /* for (let item of arr) {
+    console.log(`"${await item.getText()}"`);
+  }; */
+  return arr;
+}
 
-  // TODO: abstract "li" element search from page2 and page3 into
-  // a function and deploy said function in page1
-  let text = await driver.findElement(webdriver.By.className('Selection reg'));
-  await text.click();
+async function page1() {
+  let arr = await loadListItems();
+  let selection = arr[0];
   console.log(`Consent: "${await text.getText()}"`);
+  await selection.click();
   await nextPage();
   page2();
 }
 
 async function page2() {
-  let arr = await driver.findElements(webdriver.By.css("li"));
-  /* for (let item of arr) {
-    console.log(`"${await item.getText()}"`);
-  }; */
+  let arr = await loadListItems();
   let selection = arr[arr.length - 1];
   console.log(`Circumstances: "${await selection.getText()}"`);
   await selection.click();
@@ -64,14 +64,12 @@ async function page2() {
 }
 
 async function page3() {
-  let arr = await driver.findElements(webdriver.By.css("li"));
-  /* for (let item of arr) {
-    console.log(`"${await item.getText()}"`);
-  }; */
+  let arr = await loadListItems();
   let selection = arr[arr.length-1];
   console.log(`Symptoms: "${await selection.getText()}"`);
   await selection.click();
   await nextPage();
+  await takeScreenshot();
   await driver.quit();
 }
 
@@ -80,18 +78,24 @@ async function main() {
   await driver.get(`${process.env.URL}`);
   await driver.sleep(1000);
 
+  // print page title
+  console.log(await driver.getTitle());
+
   // verify survey is incomplete
   // TODO: in order to avoid throwing an error, consider investigating
   // children of "id=Questions" which I suspect loads on every page
-  let end = await driver.findElement(webdriver.By.id("EndOfSurvey"));
-  if (end) {
+  // let end = await driver.findElement(webdriver.By.id("EndOfSurvey"));
+  let html_source = await driver.getPageSource();
+  // let re = /<div class="ProgressBarFill" style="width: (\d{1,3})%">/;
+  // let result = re.exec(html_source);
+  // return result[1];
+
+  if (false) {
     console.log("Survey is already complete!");
     await driver.quit();
   } else {
-    // determine progress
-    let progress = 0;
-    let source = await driver.getPageSource();
-    progress = findPercentComplete(source);
+    // determine form progression
+    let progress = findPercentComplete(html_source);
     console.log(`Survey Completeness: ${progress}%`);
 
     // activate form completion
